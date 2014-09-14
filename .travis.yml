@@ -13,5 +13,11 @@ before_install:
   - sudo apt-get update -qq -y
   - sudo apt-get install libpcre3-dev julia -y
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+
 script:
-  - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("Kalman")'
+  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("Kalman"))`); Pkg.pin("Kalman"); Pkg.resolve()'
+  - julia -e 'using Kalman; @assert isdefined(:Kalman); @assert typeof(Kalman) === Module'
+  - julia --code-coverage ./test/runtests.jl
+
+after_success:
+- julia -e 'cd(Pkg.dir("Kalman")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
