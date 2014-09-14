@@ -1,5 +1,9 @@
 module Kalman
 
-# package code goes here
+using Distributions
+
+include("types.jl")
+
+export State, Observation, KalmanFilter, LinearKalmanFilter, BasicKalmanFilter, Model, ObservationModel, LinearModel, LinearObservationModel
 
 end # module
