@@ -13,6 +13,7 @@ end
 
 type LinearModel <: Model
     a::Matrix
+    g::Matrix
     q::Matrix
 end
 
@@ -32,7 +33,6 @@ type BasicKalmanFilter <: LinearKalmanFilter
 end
 
 type BasicKalmanFilterP
-    x0::State
     x1::State
     f::LinearModel
     z::LinearObservationModel
