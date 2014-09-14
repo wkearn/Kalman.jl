@@ -32,7 +32,7 @@ type BasicKalmanFilter <: LinearKalmanFilter
     z::LinearObservationModel
 end
 
-type BasicKalmanFilterP
+type BasicKalmanFilterP <: KalmanFilter
     x1::State
     f::LinearModel
     z::LinearObservationModel
