@@ -18,4 +18,6 @@ function update(filt::BasicKalmanFilterP,y::Observation)
     BasicKalmanFilter(State(xn,pn),filt.f,filt.z)
 end
 
-
+function predictupdate(filt::BasicKalmanFilter,y::Observation)
+    update(predict(filt),y)
+end

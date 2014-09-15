@@ -28,16 +28,16 @@ t = [0:dt:10]
 x = zeros(length(t))
 m = cos(t)
 
-filt0 = BasicKalmanFilter(x0,f,z)
-filt = filt0
-x[1] = filt.x.x[1]
+kf0 = BasicKalmanFilter(x0,f,z)
+kf = kf0
+x[1] = kf.x.x[1]
 
-y = map(t->Observation(m[t]+rand(Distributions.gmvnormal(filt.z.r))),1:length(t))
+y = map(t->Observation(m[t]+rand(Distributions.gmvnormal(kf.z.r))),1:length(t))
 
 for i in 2:length(t)-1
-    filt2 = predict(filt)
-    filt = update(filt2,y[i])
-    x[i+1] = filt.x.x[1]
+    kf2 = predict(kf)
+    kf = update(kf2,y[i])
+    x[i+1] = kf.x.x[1]
 end
 
-
+@test predictupdate(kf0,y[1]).x == update(predict(kf0),y[1]).x
