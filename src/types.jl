@@ -11,6 +11,10 @@ type State{T}
     p::Matrix
 end
 
+Base.(:(==))(x1::State,x2::State) = x1.x==x2.x && x1.p == x2.p
+
+
+
 type LinearModel <: Model
     a::Matrix
     g::Matrix
