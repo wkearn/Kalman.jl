@@ -15,6 +15,7 @@ ObservationModel,
 LinearModel, 
 LinearObservationModel, 
 predict, 
-update
+update,
+predictupdate
 
 end # module
