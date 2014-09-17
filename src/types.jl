@@ -25,6 +25,8 @@ type Observation{T}
     y::Vector{T}
 end
 
+convert(::Observation,y) = Observation([y])
+
 type LinearObservationModel <: ObservationModel
     h::Matrix
     r::Matrix
