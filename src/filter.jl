@@ -1,6 +1,6 @@
-function predict(filt::BasicKalmanFilter)
-    x1 = ap(filt.f,filt.x)
-    BasicKalmanFilterP(x1,filt.f,filt.z)
+function predict(kf::BasicKalmanFilter)
+    x1 = ap(kf.f,kf.x)
+    BasicKalmanFilterP(x1,kf.f,kf.z)
 end
 
 function ap(f::LinearModel,x::State)
@@ -9,15 +9,15 @@ function ap(f::LinearModel,x::State)
     State(x1,p1)
 end
 
-function update(filt::BasicKalmanFilterP,y::Observation)
-    res = y.y - filt.z.h * filt.x1.x
-    s = filt.z.h * filt.x1.p * filt.z.h' + filt.z.r
-    k = filt.x1.p * filt.z.h' * inv(s)
-    xn = filt.x1.x + k * res
-    pn = filt.x1.p - k * filt.z.h * filt.x1.p
-    BasicKalmanFilter(State(xn,pn),filt.f,filt.z)
+function update(kf::BasicKalmanFilterP,y::Observation)
+    res = y.y - kf.z.h * kf.x1.x
+    s = kf.z.h * kf.x1.p * kf.z.h' + kf.z.r
+    k = kf.x1.p * kf.z.h' * inv(s)
+    xn = kf.x1.x + k * res
+    pn = kf.x1.p - k * kf.z.h * kf.x1.p
+    BasicKalmanFilter(State(xn,pn),kf.f,kf.z)
 end
 
-function predictupdate(filt::BasicKalmanFilter,y::Observation)
-    update(predict(filt),y)
+function predictupdate(kf::BasicKalmanFilter,y::Observation)
+    update(predict(kf),y)
 end
