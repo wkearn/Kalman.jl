@@ -42,3 +42,17 @@ end
 ![Estimation of a scalar constant](https://github.com/wkearn/Kalman.jl/blob/master/examples/scalarconstant.png))
 
 ![](https://github.com/wkearn/Kalman.jl/blob/master/examples/constantvariance.png)
+
+## Roadmap
+
+Filters which have been implemented list the Kalman.jl type which implements them.
+
+### Kalman Filter
+- Linear, time-invariant filter with regular updating: `BasicKalmanFilter`
+
+### Extended Kalman Filter
+- Nonlinear, time-invariant filter with regular updating: `BasicExtendedKalmanFilter`
+
+### Unscented Kalman Filter
+
+### Ensemble Kalman Filter
