@@ -29,7 +29,7 @@ kf0 = BasicKalmanFilter(x0,f,z)
 kf = kf0
 x[1] = kf.x.x[1]
 
-y = map(t->Observation(m[t]+rand(Distributions.gmvnormal(kf.z.r))),1:length(t))
+y = map(t->Observation(m[t]+kf.z.r[1]*randn(1)),1:length(t))
 
 for i in 2:length(t)-1
     kf2 = predict(kf)

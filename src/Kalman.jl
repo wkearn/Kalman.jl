@@ -1,11 +1,5 @@
 module Kalman
 
-using Distributions
-
-include("types.jl")
-include("filter.jl")
-
-
 export State, 
 Observation, 
 KalmanFilter, 
@@ -21,6 +15,8 @@ update,
 predictupdate,
 EKF
 
+include("types.jl")
+include("filter.jl")
 include("ekf.jl")
 
 end # module
