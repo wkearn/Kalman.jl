@@ -39,6 +39,6 @@ for i = 1:49
 end
 ```
 
-![Estimation of a scalar constant](examples/scalarconstant.svg)
+![Estimation of a scalar constant](https://github.com/wkearn/Kalman.jl/blob/master/examples/scalarconstant.png))
 
-![](examples/constantvariance.svg)
+![](https://github.com/wkearn/Kalman.jl/blob/master/examples/constantvariance.png)
