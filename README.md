@@ -9,31 +9,35 @@ Note that the [TimeModels.jl](https://github.com/JuliaStats/TimeModels.jl) also 
 
 ## Installation
 
+```julia
 	Pkg.clone("git://github.com/wkearn/Kalman.jl")
+```
 
 Until this package is registered, simply Pkg.clone from this repository
 
 ## Usage
 
-	using Kalman
-	
-	x0 = State([0.0],[1.0]')
-	f = LinearModel([1]',[1]',[1e-10]')
-	z = LinearObservationModel([1]',[0.01]')
+```julia
+using Kalman
 
-	kf0 = BasicKalmanFilter(x0,f,z)
-	kf = kf0
+x0 = State([0.0],[1.0]')
+f = LinearModel([1]',[1]',[1e-10]')
+z = LinearObservationModel([1]',[0.01]')
 
-	y = map(i->Observation([i]),-0.37727+sqrt(0.01)*randn(50))
+kf0 = BasicKalmanFilter(x0,f,z)
+kf = kf0
 
-	x = zeros(Float64,50)
-	p = ones(Float64,50)
+y = map(i->Observation([i]),-0.37727+sqrt(0.01)*randn(50))
 
-	for i = 1:49
-		kf = predictupdate(kf,y[i])
-		x[i+1] = kf.x.x[1]
-		p[i+1] = kf.x.p[1]
-	end
+x = zeros(Float64,50)
+p = ones(Float64,50)
+
+for i = 1:49
+	kf = predictupdate(kf,y[i])
+	x[i+1] = kf.x.x[1]
+	p[i+1] = kf.x.p[1]
+end
+```
 
 ![Estimation of a scalar constant](examples/scalarconstant.svg)
 
