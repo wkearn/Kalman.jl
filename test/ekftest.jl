@@ -36,7 +36,11 @@ ys = z.+R[1]*randn(301)
 ps = zeros(t)
 rs = zeros(t)
 
-for i in 1:length(t)
+kf1 = predictupdate(kf,Observation([ys[1]]))
+predictupdate!(kf,Observation([ys[1]]))
+@test kf1.x == kf.x
+
+for i in 2:length(t)
     kf = predictupdate(kf,Observation([ys[i]]))
     ps[i] = kf.x.x[2]
     rs[i] = kf.x.x[1]

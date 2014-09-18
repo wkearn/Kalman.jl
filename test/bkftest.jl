@@ -31,6 +31,10 @@ x[1] = kf.x.x[1]
 
 y = map(t->Observation(m[t]+kf.z.r[1]*randn(1)),1:length(t))
 
+kf1 = predictupdate(kf,y[1])
+predictupdate!(kf,y[1])
+@test kf1.x == kf.x
+
 for i in 2:length(t)-1
     kf2 = predict(kf)
     kf = update(kf2,y[i])
