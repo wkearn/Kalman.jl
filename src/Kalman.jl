@@ -19,6 +19,10 @@ BasicExtendedKalmanFilter,
 NonlinearModel,
 NonlinearObservationModel,
 ExtendedKalmanFilter
+AdditiveUnscentedKalmanFilter,
+UnscentedKalmanFilter,
+AdditiveUnscentedModel,
+AdditiveUnscentedObservationModel
 
 include("types.jl")
 include("filter.jl")
