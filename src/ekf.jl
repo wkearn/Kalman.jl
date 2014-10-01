@@ -42,17 +42,15 @@ type BasicExtendedKalmanFilter <: ExtendedKalmanFilter
     x::State
     f::NonlinearModel
     z::NonlinearObservationModel
-    adv::Bool
 end
 
 function predict(kf::BasicExtendedKalmanFilter)
     x1 = ap(kf.f,kf.x)
-    BasicExtendedKalmanFilter(x1,kf.f,kf.z,true)
+    BasicExtendedKalmanFilter(x1,kf.f,kf.z)
 end
 
 function predict!(kf::BasicExtendedKalmanFilter)
     kf.x = ap(kf.f,kf.x)
-    kf.adv = true
     kf
 end
 
@@ -65,26 +63,23 @@ function ap(f::NonlinearModel,x::State)
 end
 
 function update(kf::BasicExtendedKalmanFilter,y::Observation)
-    kf.adv || error("Filter has not been advanced in time")
     res = y.y - kf.z.h(kf.x.x)
     H = kf.z.j(kf.x.x)'
     s = H * kf.x.p * H' + kf.z.r
     k = kf.x.p * H' * inv(s)
     xn = kf.x.x + k * res
     pn = kf.x.p - k * H * kf.x.p
-    BasicExtendedKalmanFilter(State(xn,pn),kf.f,kf.z,false)
+    BasicExtendedKalmanFilter(State(xn,pn),kf.f,kf.z)
 end
 
 function update!(kf::BasicExtendedKalmanFilter,y::Observation)
-    kf.adv || error("Filter has not been advanced in time")
-        res = y.y - kf.z.h(kf.x.x)
+    res = y.y - kf.z.h(kf.x.x)
     H = kf.z.j(kf.x.x)'
     s = H * kf.x.p * H' + kf.z.r
     k = kf.x.p * H' * inv(s)
     xn = kf.x.x + k * res
     pn = kf.x.p - k * H * kf.x.p
     kf.x = State(xn,pn)
-    kf.adv = false
     kf
 end
 

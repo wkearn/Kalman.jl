@@ -34,7 +34,6 @@ type BasicKalmanFilter <: LinearKalmanFilter
     x::State
     f::LinearModel
     z::LinearObservationModel
-    adv::Bool
 end
 
 

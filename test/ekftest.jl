@@ -26,7 +26,7 @@ x0 = State([5.0,0.1],[1e2 0.0; 0.0 1e-10])
 ekff = NonlinearModel(fekf,gekf,Q)
 z = NonlinearObservationModel(hekf,R)
 
-kf0 = BasicExtendedKalmanFilter(x0,ekff,z,true)
+kf0 = BasicExtendedKalmanFilter(x0,ekff,z)
 kf = kf0
 
 t = [0:deltaT:deltaT*300]

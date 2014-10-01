@@ -25,7 +25,7 @@ t = [0:dt:10]
 x = zeros(length(t))
 m = cos(t)
 
-kf0 = BasicKalmanFilter(x0,f,z,false)
+kf0 = BasicKalmanFilter(x0,f,z)
 kf = kf0
 x[1] = kf.x.x[1]
 
