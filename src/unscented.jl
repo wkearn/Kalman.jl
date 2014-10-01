@@ -48,14 +48,14 @@ function update(kf::AdditiveUnscentedKalmanFilter,y::Observation)
     resy = map(y->y-yhat,yp)
 
     # Covariances of state and observation
-    pyy = dot(kf.wc,map(y->y*y',resy)) + r
+    pyy = dot(kf.wc,map(y->y*y',resy)) + kf.z.r
     pxy = dot(kf.wc,map((x,y)->x*y',resx,resy))
 
     # Kalman gain
     k = pxy*inv(pyy)
 
     # Update state estimate
-    xk = xhat + k*(y[i]-yhat)
+    xk = xhat + k*(y.y-yhat)
     pk = phat - k*pyy*k'
     
     # Should recalculate sigmas from the new state
@@ -79,14 +79,14 @@ function update!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
     resy = map(y->y-yhat,yp)
 
     # Covariances of state and observation
-    pyy = dot(kf.wc,map(y->y*y',resy)) + r
+    pyy = dot(kf.wc,map(y->y*y',resy)) + kf.z.r
     pxy = dot(kf.wc,map((x,y)->x*y',resx,resy))
 
     # Kalman gain
     k = pxy*inv(pyy)
 
     # Update state estimate
-    xk = xhat + k*(y[i]-yhat)
+    xk = xhat + k*(y.y-yhat)
     pk = phat - k*pyy*k'
     
     kf.x = State(xk,pk)
