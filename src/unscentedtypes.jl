@@ -49,7 +49,10 @@ function sigma(x::Vector,p::Matrix,α,κ)
 end
 
 sigma(x::State,α,κ) = sigma(x.x,x.p,α,κ)
-sigma(kf::AdditiveUnscentedKalmanFilter) = sigma(kf.x,kf.α,kf.κ)
+
+function sigma(kf::AdditiveUnscentedKalmanFilter;recalc=true)
+    recalc ? sigma(kf.x,kf.α,kf.κ) : kf.σ
+end
 
 function sigmaweights(n,α,β,κ)
     wm = zeros(2n+1)
