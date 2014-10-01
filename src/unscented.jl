@@ -2,55 +2,99 @@ include("unscentedtypes.jl")
 
 # Predict and update functions
 
+# Now a target for abstraction
 function predict(kf::AdditiveUnscentedKalmanFilter)
-    σp = map(kf.f.f,kf.σ) # Run sigmas through the func.
-    xhat = dot(kf.wm,σp) # Weight and sum for the mean
-    pu = map(x->(x-xhat)*(x-xhat)',σp) # Find unweigh. cov
-    phat = dot(kf.wc,pu) + kf.f.q # Weight cov. and add process noise
-    AdditiveUnscentedKalmanFilter(State(xhat,phat),kf.f,kf.z,σp,kf.α,kf.β,kf.κ,kf.wm,kf.wc)
+    σp = map(kf.f.f,kf.σ)
+    AdditiveUnscentedKalmanFilter(kf.x,kf.f,kf.z,σp,kf.α,kf.β,kf.κ,kf.wm,kf.wc)
 end
 
-function Kalman.predict!(kf::AdditiveUnscentedKalmanFilter)
-    σp = map(kf.f.f,kf.σ) # Run them through the func.
-    xhat = dot(kf.wm,σp) # Weight and sum for the mean
-    pu = map(x->(x-xhat)*(x-xhat)',σp) # Find unweigh. cov
-    phat = dot(kf.wc,pu) + kf.f.q # Weight cov. and add process noise
-    kf.x = State(xhat,phat)
+function predict!(kf::AdditiveUnscentedKalmanFilter)
+    σp = map(kf.f.f,kf.σ)
     kf.σ = σp
     kf
 end
 
-function Kalman.update(kf::AdditiveUnscentedKalmanFilter,y::Observation)
+function estimate(kf::AdditiveUnscentedKalmanFilter)
+    xhat = dot(kf.wm,kf.σ)
+    phat = dot(kf.wc,
+               map(x->(x-xhat)*(x-xhat)',kf.σ))+kf.f.q
+    State(xhat,phat)
+end
+
+function estimate!(kf::AdditiveUnscentedKalmanFilter)
+    xhat = dot(kf.wm,kf.σ)
+    phat = dot(kf.wc,
+               map(x->(x-xhat)*(x-xhat)',kf.σ))+kf.f.q
+    kf.x = State(xhat,phat)
+end
+
+function update(kf::AdditiveUnscentedKalmanFilter,y::Observation)
+    # Predicted mean
+    xhat = dot(kf.wm,kf.σ)
+
+    # Predicted covariance
+    pu = map(x->(x-xhat)*(x-xhat)',kf.σ)
+    phat = dot(kf.wc,pu) + kf.f.q 
+
+    # Predicted observations
     yp = map(kf.z.h,kf.σ) # Run sigmas through h
     yhat = dot(kf.wm,yp) # Weight to find mean
-    resx = map(x->x-kf.x.x,kf.σ) # I think that's right
+
+    # Residuals in state and observation
+    resx = map(x->x-xhat,kf.σ) # I think that's right
     resy = map(y->y-yhat,yp)
-    # Next line is confusing
+
+    # Covariances of state and observation
     pyy = dot(kf.wc,map(y->y*y',resy)) + r
     pxy = dot(kf.wc,map((x,y)->x*y',resx,resy))
-    k = pxy*inv(pyy)    # Kalman gain
-    xk = xhat + k*(y[i]-yhat) # New state
-    pk = phat - k*pyy*k' # New state covariance
-    AdditiveUnscentedKalmanFilter(State(xk,pk),kf.f,kf.z,kf.α,kf.β,kf.κ)
+
+    # Kalman gain
+    k = pxy*inv(pyy)
+
+    # Update state estimate
+    xk = xhat + k*(y[i]-yhat)
+    pk = phat - k*pyy*k'
+    
+    # Should recalculate sigmas from the new state
+    AdditiveUnscentedKalmanFilter(State(xk,pk),kf.f,kf.z,kf.α,kf.β,kf.κ,kf.wm,kf.wc)
 end
 
-function Kalman.update!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
+function update!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
+    # Predicted mean
+    xhat = dot(kf.wm,kf.σ)
+
+    # Predicted covariance
+    pu = map(x->(x-xhat)*(x-xhat)',kf.σ)
+    phat = dot(kf.wc,pu) + kf.f.q 
+
+    # Predicted observations
     yp = map(kf.z.h,kf.σ) # Run sigmas through h
     yhat = dot(kf.wm,yp) # Weight to find mean
-    resx = map(x->x-kf.x.x,kf.σ) # I think that's right
+
+    # Residuals in state and observation
+    resx = map(x->x-xhat,kf.σ) # I think that's right
     resy = map(y->y-yhat,yp)
-    # Next line is confusing
-    pyy = dot(kf.wc,map(y->y*y',resy)) + kf.z.r
+
+    # Covariances of state and observation
+    pyy = dot(kf.wc,map(y->y*y',resy)) + r
     pxy = dot(kf.wc,map((x,y)->x*y',resx,resy))
-    k = pxy*inv(pyy)    # Kalman gain
-    xk = kf.x.x + k*(y.y-yhat) # New state
-    pk = kf.x.p - k*pyy*k' # New state covariance
+
+    # Kalman gain
+    k = pxy*inv(pyy)
+
+    # Update state estimate
+    xk = xhat + k*(y[i]-yhat)
+    pk = phat - k*pyy*k'
+    
     kf.x = State(xk,pk)
-    kf.σ = sigma(kf.x,kf.α,kf.κ)
-    kf
+
+    # Need to recalculate sigma points after update
+    kf.σ = sigma(kf)
+
+    kf # Return the mutated filter
 end
 
-function Kalman.predictupdate!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
+function predictupdate!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
     update!(predict!(kf),y)
 end
 
