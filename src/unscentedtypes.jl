@@ -30,6 +30,11 @@ function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::Add
         AdditiveUnscentedKalmanFilter(x,f,z,σ,α,β,κ,wm,wc)
 end
 
+function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real,wm::Vector,wc::Vector)
+    σ = sigma(x,α,κ)
+    AdditiveUnscentedKalmanFilter(x,f,z,σ,α,β,κ,wm,wc)
+end
+
 function sigma(x::Vector,p::Matrix,α,κ)
     n = length(x)
     σ = fill(zeros(x),2n+1)
@@ -44,6 +49,7 @@ function sigma(x::Vector,p::Matrix,α,κ)
 end
 
 sigma(x::State,α,κ) = sigma(x.x,x.p,α,κ)
+sigma(kf::AdditiveUnscentedKalmanFilter) = sigma(kf.x,kf.α,kf.κ)
 
 function sigmaweights(n,α,β,κ)
     wm = zeros(2n+1)
