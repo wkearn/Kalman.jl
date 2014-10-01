@@ -1,8 +1,5 @@
 include("unscentedtypes.jl")
 
-## Sigma points and weights
-
-
 # Predict and update functions
 
 function predict(kf::AdditiveUnscentedKalmanFilter)
