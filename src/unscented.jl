@@ -45,11 +45,11 @@ function update(kf::AdditiveUnscentedKalmanFilter,y::Observation)
 
     # Residuals in state and observation
     resx = map(x->x-xhat,kf.σ) # I think that's right
-    resy = map(y->y-yhat,yp)
+    resy = map(x->x-yhat,yp)
 
     # Covariances of state and observation
-    pyy = dot(kf.wc,map(y->y*y',resy)) + kf.z.r
-    pxy = dot(kf.wc,map((x,y)->x*y',resx,resy))
+    pyy = dot(kf.wc,map(x->x*x',resy)) + kf.z.r
+    pxy = dot(kf.wc,map((x,z)->x*z',resx,resy))
 
     # Kalman gain
     k = pxy*inv(pyy)
@@ -76,11 +76,11 @@ function update!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
 
     # Residuals in state and observation
     resx = map(x->x-xhat,kf.σ) # I think that's right
-    resy = map(y->y-yhat,yp)
+    resy = map(x->x-yhat,yp)
 
     # Covariances of state and observation
-    pyy = dot(kf.wc,map(y->y*y',resy)) + kf.z.r
-    pxy = dot(kf.wc,map((x,y)->x*y',resx,resy))
+    pyy = dot(kf.wc,map(x->x*x',resy)) + kf.z.r
+    pxy = dot(kf.wc,map((x,z)->x*z',resx,resy))
 
     # Kalman gain
     k = pxy*inv(pyy)
@@ -100,5 +100,3 @@ end
 function predictupdate!(kf::AdditiveUnscentedKalmanFilter,y::Observation)
     update!(predict!(kf),y)
 end
-
-
