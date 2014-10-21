@@ -2,6 +2,11 @@
 
 PKG_DIR=`julia -e "print(Pkg.dir())"`
 TEST_DIR="$PKG_DIR/Kalman/test"
+
+if [ ! -f $TEST_DIR/perf/benchmarks ]
+then printf "%-10s%-15s%-6s%-15s%-15s\n" "lang" "date" "iters" "time" "avg" >  $TEST_DIR/perf/benchmarks
+fi
+
 n=$1
 d=`date +%s`
 jt=`julia $TEST_DIR/perf/perf.jl $n`

@@ -1,3 +1,4 @@
 examples/.ipynb_checkpoints
 *.bak
 sandbox
+test/perf/benchmarks
