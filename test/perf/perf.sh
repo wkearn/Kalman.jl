@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKG_DIR=`/home/wkearn/.julia/v0.4`
+PKG_DIR="/home/wkearn/.julia/v0.4"
 TEST_DIR="$PKG_DIR/Kalman/test"
 n=$1
 d=`date +%s`
