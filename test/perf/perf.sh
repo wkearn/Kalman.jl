@@ -1,6 +1,5 @@
 #!/bin/bash
 
-`julia -e "Pkg.update(); Pkg.clone("https://github.com/wkearn/Kalman.jl"); Pkg.checkout("Kalman","perf")"`
 PKG_DIR=`julia -e "print(Pkg.dir())"`
 TEST_DIR="$PKG_DIR/Kalman/test"
 n=$1
