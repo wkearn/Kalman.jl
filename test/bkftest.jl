@@ -6,7 +6,7 @@ s = State([1.,0],[0.5 0; 0 1e-10])
 @test s.x == [1,0]
 @test s.p == [0.5 0; 0 1e-10]
 
-o = Observation([2.])
+o = convert(Observation,2.0)
 
 @test typeof(o) == Observation{Float64}
 @test o.y == [2]
