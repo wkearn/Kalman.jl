@@ -23,7 +23,7 @@ type Observation{T}
     y::Vector{T}
 end
 
-convert(::Observation,y) = Observation([y])
+Base.convert(::Type{Observation},y) = Observation([y])
 
 type LinearObservationModel <: ObservationModel
     h::Matrix
