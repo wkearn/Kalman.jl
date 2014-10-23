@@ -13,7 +13,7 @@ Note that the [TimeModels.jl](https://github.com/JuliaStats/TimeModels.jl) also 
 	Pkg.clone("git://github.com/wkearn/Kalman.jl")
 ```
 
-Until this package is registered, simply Pkg.clone from this repository
+Until this package is registered, simply `Pkg.clone` from this repository
 
 ## Usage
 
@@ -28,7 +28,11 @@ kf0 = BasicKalmanFilter(x0,f,z)
 kf = kf0
 
 y = map(i->Observation([i]),-0.37727+sqrt(0.01)*randn(50))
+```
 
+Note that in Julia `v0.4` and greater, you can replace the `Observation{T}` with a `Nullable{Vector{T}}` which allows you to represent missing measurements.
+
+```julia
 x = zeros(Float64,50)
 p = ones(Float64,50)
 
@@ -49,6 +53,7 @@ Filters which have been implemented list the Kalman.jl type which implements the
 
 ### Kalman Filter
 - Linear, time-invariant filter with regular updating: `BasicKalmanFilter`
+  - Missing measurements supported with `Nullable{Vector{T}}` observations
 
 ### Extended Kalman Filter
 - Nonlinear, time-invariant filter with regular updating: `BasicExtendedKalmanFilter`
