@@ -27,7 +27,7 @@ function covs(kf::BasicKalmanFilter,y::Observation)
     (res,ph,s)
 end
 
-function update(kf::KalmanFilter,y::Observation)
+function update(kf::BasicKalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
     k = ph * inv(s)
     xn = kf.x.x + k * res
