@@ -47,9 +47,12 @@ function predict(kf::BasicExtendedKalmanFilter)
     BasicExtendedKalmanFilter(x1,kf.f,kf.z)
 end
 
-function predict!(kf::BasicExtendedKalmanFilter)
-    kf.x = ap(kf.f,kf.x)
-    kf
+function update(kf::BasicExtendedKalmanFilter,y::Observation)
+    (res,ph,s) = covs(kf,y)
+    k = ph * inv(s)
+    xn = kf.x.x + k * res
+    pn = kf.x.p - k * s * k'
+    BasicExtendedKalmanFilter(State(xn,pn),kf.f,kf.z)
 end
 
 function ap(f::NonlinearModel,x::State)
@@ -60,31 +63,11 @@ function ap(f::NonlinearModel,x::State)
     State(x1,p1)
 end
 
-function update(kf::BasicExtendedKalmanFilter,y::Observation)
+function covs(kf::BasicExtendedKalmanFilter,y::Observation)
     res = y.y - kf.z.h(kf.x.x)
     H = kf.z.j(kf.x.x)'
+    ph = kf.x.p * H'
     s = H * kf.x.p * H' + kf.z.r
-    k = kf.x.p * H' * inv(s)
-    xn = kf.x.x + k * res
-    pn = kf.x.p - k * H * kf.x.p
-    BasicExtendedKalmanFilter(State(xn,pn),kf.f,kf.z)
+    (res,ph,s)
 end
 
-function update!(kf::BasicExtendedKalmanFilter,y::Observation)
-    res = y.y - kf.z.h(kf.x.x)
-    H = kf.z.j(kf.x.x)'
-    s = H * kf.x.p * H' + kf.z.r
-    k = kf.x.p * H' * inv(s)
-    xn = kf.x.x + k * res
-    pn = kf.x.p - k * H * kf.x.p
-    kf.x = State(xn,pn)
-    kf
-end
-
-function predictupdate(kf::BasicExtendedKalmanFilter,y::Observation)
-    update(predict(kf),y)
-end
-
-function predictupdate!(kf::BasicExtendedKalmanFilter,y::Observation)
-    update!(predict!(kf),y)
-end
