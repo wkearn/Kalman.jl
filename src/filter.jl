@@ -1,11 +1,11 @@
+function predict!(kf::KalmanFilter)
+    kf.x = ap(kf.f,kf.x)
+    kf
+end
+
 function predict(kf::BasicKalmanFilter)
     x1 = ap(kf.f,kf.x)
     BasicKalmanFilter(x1,kf.f,kf.z)
-end
-
-function predict!(kf::BasicKalmanFilter)
-    kf.x = ap(kf.f,kf.x)
-    kf
 end
 
 function ap(f::LinearModel,x::State)
@@ -13,7 +13,6 @@ function ap(f::LinearModel,x::State)
     p1 = f.a*x.p*f.a' + f.g*f.q*f.g'
     State(x1,p1)
 end
-
 
 # Unscented filters require that we explicitly
 # calculate the innovation matrix and use it
@@ -28,7 +27,7 @@ function covs(kf::BasicKalmanFilter,y::Observation)
     (res,ph,s)
 end
 
-function update(kf::BasicKalmanFilter,y::Observation)
+function update(kf::KalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
     k = ph * inv(s)
     xn = kf.x.x + k * res
@@ -36,7 +35,7 @@ function update(kf::BasicKalmanFilter,y::Observation)
     BasicKalmanFilter(State(xn,pn),kf.f,kf.z)
 end
 
-function update!(kf::BasicKalmanFilter,y::Observation)
+function update!(kf::KalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
     k = ph * inv(s)
     xn = kf.x.x + k * res
@@ -46,11 +45,11 @@ function update!(kf::BasicKalmanFilter,y::Observation)
 end
 
 
-function predictupdate(kf::BasicKalmanFilter,y::Observation)
+function predictupdate(kf::KalmanFilter,y::Observation)
     update(predict(kf),y)
 end
 
-function predictupdate!(kf::BasicKalmanFilter,y::Observation)
+function predictupdate!(kf::KalmanFilter,y::Observation)
     update!(predict!(kf),y)
 end
 
