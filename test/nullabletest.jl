@@ -1,5 +1,4 @@
 using Kalman, Base.Test
-using Kalman.EKF
 
 x0 = State([1.,0],[0.5 0; 0 1e-10])
 dt = 0.01

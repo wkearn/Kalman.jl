@@ -1,5 +1,4 @@
 using Kalman
-using Kalman.EKF
 
 k = 1.0
 p0 = 0.1*k

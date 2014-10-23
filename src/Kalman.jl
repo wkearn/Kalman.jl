@@ -16,7 +16,9 @@ predict!,
 update!,
 predictupdate!,
 BasicExtendedKalmanFilter,
-EKF
+NonlinearModel,
+NonlinearObservationModel,
+ExtendedKalmanFilter
 
 include("types.jl")
 include("filter.jl")
@@ -26,7 +28,5 @@ include("ekf.jl")
 if VERSION >= v"0.4.0-"
     include("nullable.jl")
 end
-
-using .EKF
 
 end # module

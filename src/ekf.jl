@@ -1,5 +1,3 @@
-module EKF
-
 using Kalman
 using ForwardDiff
 
@@ -90,5 +88,3 @@ end
 function predictupdate!(kf::BasicExtendedKalmanFilter,y::Observation)
     update!(predict!(kf),y)
 end
-
-end # module
