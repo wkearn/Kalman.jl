@@ -1,17 +1,4 @@
-using Kalman
 using ForwardDiff
-
-import Kalman.predict, 
-Kalman.update, 
-Kalman.predictupdate,
-Kalman.predict!,
-Kalman.update!,
-Kalman.predictupdate!
-
-export ExtendedKalmanFilter,
-NonlinearModel,
-NonlinearObservationModel,
-BasicExtendedKalmanFilter
 
 abstract ExtendedKalmanFilter <: KalmanFilter
 
