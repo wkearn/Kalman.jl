@@ -18,7 +18,7 @@ predictupdate!,
 BasicExtendedKalmanFilter,
 NonlinearModel,
 NonlinearObservationModel,
-ExtendedKalmanFilter
+ExtendedKalmanFilter,
 AdditiveUnscentedKalmanFilter,
 UnscentedKalmanFilter,
 AdditiveUnscentedModel,
