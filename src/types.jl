@@ -36,4 +36,4 @@ type BasicKalmanFilter <: LinearKalmanFilter
     z::LinearObservationModel
 end
 
-
+Base.copy(kf::KalmanFilter) = deepcopy(kf)

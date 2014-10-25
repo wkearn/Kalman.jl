@@ -29,19 +29,6 @@ type BasicExtendedKalmanFilter <: ExtendedKalmanFilter
     z::NonlinearObservationModel
 end
 
-function predict(kf::BasicExtendedKalmanFilter)
-    x1 = ap(kf.f,kf.x)
-    BasicExtendedKalmanFilter(x1,kf.f,kf.z)
-end
-
-function update(kf::BasicExtendedKalmanFilter,y::Observation)
-    (res,ph,s) = covs(kf,y)
-    su = lufact!(s)
-    xn = kf.x.x + ph * (su\res)
-    pn = kf.x.p - ph * (su'\ph')
-    BasicExtendedKalmanFilter(State(xn,pn),kf.f,kf.z)
-end
-
 function ap(f::NonlinearModel,x::State)
     x1 = f.f(x.x)
     F = f.j(x.x)

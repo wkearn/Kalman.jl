@@ -3,9 +3,8 @@ function predict!(kf::KalmanFilter)
     kf
 end
 
-function predict(kf::BasicKalmanFilter)
-    x1 = ap(kf.f,kf.x)
-    BasicKalmanFilter(x1,kf.f,kf.z)
+function predict(kf::KalmanFilter)
+    predict!(copy(kf))
 end
 
 function ap(f::LinearModel,x::State)
@@ -27,12 +26,8 @@ function covs(kf::BasicKalmanFilter,y::Observation)
     (res,ph,s)
 end
 
-function update(kf::BasicKalmanFilter,y::Observation)
-    (res,ph,s) = covs(kf,y)
-    su = lufact!(s)
-    xn = kf.x.x + ph * (su\res)
-    pn = kf.x.p - ph * (su'\ph')
-    BasicKalmanFilter(State(xn,pn),kf.f,kf.z)
+function update(kf::KalmanFilter,y::Observation)
+    update!(copy(kf),y)
 end
 
 function update!(kf::KalmanFilter,y::Observation)
