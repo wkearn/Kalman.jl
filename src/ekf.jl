@@ -36,9 +36,9 @@ end
 
 function update(kf::BasicExtendedKalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
-    k = ph * inv(s)
-    xn = kf.x.x + k * res
-    pn = kf.x.p - k * s * k'
+    su = lufact!(s)
+    xn = kf.x.x + ph * (su\res)
+    pn = kf.x.p - ph * (su'\ph')
     BasicExtendedKalmanFilter(State(xn,pn),kf.f,kf.z)
 end
 
