@@ -40,7 +40,7 @@ function sigma(x::Vector,p::Matrix,α,κ)
     σ = fill(zeros(x),2n+1)
     λ = sqrt(n+α^2*(n+κ)-n)
     σ[1] = x
-    sp = λ*chol(p)
+    sp = λ*full(chol(p))
     for i = 2:n+1
         σ[i] = x + sp[:,i-1]
         σ[i+n] = x - sp[:,i-1]
@@ -50,7 +50,7 @@ end
 
 sigma(x::State,α,κ) = sigma(x.x,x.p,α,κ)
 
-function sigma(kf::AdditiveUnscentedKalmanFilter;recalc=true)
+function sigma(kf::AdditiveUnscentedKalmanFilter; recalc=true)
     recalc ? sigma(kf.x,kf.α,kf.κ) : kf.σ
 end
 
