@@ -29,21 +29,20 @@ end
 
 function update(kf::BasicKalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
-    k = ph * inv(s)
-    xn = kf.x.x + k * res
-    pn = kf.x.p - k * s * k'
+    su = lufact!(s)
+    xn = kf.x.x + ph * (su\res)
+    pn = kf.x.p - ph * (su'\ph')
     BasicKalmanFilter(State(xn,pn),kf.f,kf.z)
 end
 
 function update!(kf::KalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
-    k = ph * inv(s)
-    xn = kf.x.x + k * res
-    pn = kf.x.p - k * s * k'
+    su = lufact!(s)
+    xn = kf.x.x + ph * (su\res)
+    pn = kf.x.p - ph * (su'\ph')
     kf.x = State(xn,pn)
     kf
 end
-
 
 function predictupdate(kf::KalmanFilter,y::Observation)
     update(predict(kf),y)
@@ -52,4 +51,3 @@ end
 function predictupdate!(kf::KalmanFilter,y::Observation)
     update!(predict!(kf),y)
 end
-
