@@ -6,7 +6,7 @@ include("unscentedtypes.jl")
 function ap(f::AdditiveUnscentedModel,s::UnscentedState)
     σs = map(f.f,s.σ)
     x = dot(s.wm,σs)
-    p = dot(s.wc,map(y->(y-x)*(y-x)',s.σ)) + f.q
+    p = dot(s.wc,map(y->(y-x)*(y-x)',σs)) + f.q
     UnscentedState(σs,s.α,s.β,s.κ,s.wm,s.wc)
 end
 
