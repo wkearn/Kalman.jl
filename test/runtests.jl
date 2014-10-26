@@ -3,7 +3,7 @@ using Base.Test
 
 include("bkftest.jl")
 include("ekftest.jl")
-include("ukftest.jl")
+include("ukf/bkfiltertest.jl")
 
 if VERSION >= v"0.4.0-"
     include("nullabletest.jl")
