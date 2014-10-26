@@ -35,7 +35,13 @@ function update!(kf::KalmanFilter,y::Observation)
     su = lufact!(s)
     xn = kf.x.x + ph * (su\res)
     pn = kf.x.p - ph * (su'\ph')
-    kf.x = State(xn,pn)
+    
+    # This is an ugly hack which works for now
+    if typeof(kf.x) <: UnscentedState
+        kf.x = UnscentedState(xn,pn,kf.x.α,kf.x.β,kf.x.κ)
+    else
+        kf.x = State(xn,pn)
+    end
     kf
 end
 

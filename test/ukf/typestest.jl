@@ -21,7 +21,7 @@ end
 
 fm = AdditiveUnscentedModel(f,1e-10*eye(2))
 
-h(x) = x[1]
+h(x) = [x[1]]
 
 zm = AdditiveUnscentedObservationModel(h,[0.1]')
 
