@@ -13,19 +13,19 @@ type UnscentedState{T} <: AbstractState
     wc::Vector
 end
 
-function UnscentedState(x::Vector,p::Matrix,α::Real,β::Real,κ::Real)
+function UnscentedState{T}(x::Vector{T},p::Matrix,α::Real,β::Real,κ::Real)
     σ = sigma(x,p,α,κ)
     (wm,wc) = sigmaweights(length(x),α,β,κ)
     UnscentedState(x,p,σ,α,β,κ,wm,wc)
 end
 
-function UnscentedState(x::State,α::Real,β::Real,κ::Real)
+function UnscentedState{T}(x::State{T},α::Real,β::Real,κ::Real)
     σ = sigma(x,α,κ)
     (wm,wc) = sigmaweights(length(x.x),α,β,κ)
     UnscentedState(x.x,x.p,σ,α,β,κ,wm,wc)
 end
 
-function UnscentedState(σ::Sigmas{Float64},α::Real,β::Real,κ::Real,wm::Vector,wc::Vector)
+function UnscentedState{T}(σ::Sigmas{T},α::Real,β::Real,κ::Real,wm::Vector,wc::Vector)
     x = dot(wm,σ)
     p = dot(wc,map(y->(y-x)*(y-x)',σ))
     UnscentedState(x,p,σ,α,β,κ,wm,wc)
