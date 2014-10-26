@@ -16,6 +16,7 @@ function f(x)
     x1 = zeros(x)
     x1[1] = x[1] + dt*x[2]
     x1[2] = x[2] - dt*x[1]
+    x1
 end
 
 fm = AdditiveUnscentedModel(f,1e-10*eye(2))
