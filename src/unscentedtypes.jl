@@ -25,6 +25,12 @@ function UnscentedState(x::State,α::Real,β::Real,κ::Real)
     UnscentedState(x.x,x.p,σ,α,β,κ,wm,wc)
 end
 
+function UnscentedState(σ::Sigmas{Float64},α::Real,β::Real,κ::Real,wm::Vector,wc::Vector)
+    x = dot(wm,σ)
+    p = dot(wc,map(y->(y-x)*(y-x)',σ))
+    UnscentedState(x,p,σ,α,β,κ,wm,wc)
+end
+
 type AdditiveUnscentedObservationModel <: ObservationModel
     h::Function
     r::Matrix
