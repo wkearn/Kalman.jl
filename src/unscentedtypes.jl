@@ -19,6 +19,12 @@ function UnscentedState(x::Vector,p::Matrix,α::Real,β::Real,κ::Real)
     UnscentedState(x,p,σ,α,β,κ,wm,wc)
 end
 
+function UnscentedState(x::State,α::Real,β::Real,κ::Real)
+    σ = sigma(x,α,κ)
+    (wm,wc) = sigmaweights(length(x.x),α,β,κ)
+    UnscentedState(x.x,x.p,σ,α,β,κ,wm,wc)
+end
+
 type AdditiveUnscentedObservationModel <: ObservationModel
     h::Function
     r::Matrix
@@ -35,15 +41,14 @@ type AdditiveUnscentedKalmanFilter <: UnscentedKalmanFilter
     z::AdditiveUnscentedObservationModel
 end
 
-function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)
-    σ = sigma(x,α,κ)
-    (wm,wc) = sigmaweights(length(x.x),α,β,κ)
-    AdditiveUnscentedKalmanFilter(x,f,z,σ,α,β,κ,wm,wc)
+function AdditiveUnscentedKalmanFilter(x::Vector,p::Matrix,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)
+    s = UnscentedState(x,p,α,β,κ)
+    AdditiveUnscentedKalmanFilter(s,f,z)
 end
 
-function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real,wm::Vector,wc::Vector)
-    σ = sigma(x,α,κ)
-    AdditiveUnscentedKalmanFilter(x,f,z,σ,α,β,κ,wm,wc)
+function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)
+    s = UnscentedState(x,α,β,κ)
+    AdditiveUnscentedKalmanFilter(s,f,z)
 end
 
 function sigma(x::Vector,p::Matrix,α,κ)
