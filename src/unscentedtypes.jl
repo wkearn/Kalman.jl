@@ -1,6 +1,23 @@
-typealias Sigmas Array{Array{Float64,1},1}
+typealias Sigmas Array{Array{Real,1},1}
 
 abstract UnscentedKalmanFilter <: KalmanFilter
+
+type UnscentedState{T} <: AbstractState
+    x::Vector{T}
+    p::Matrix
+    σ::Sigmas
+    α::Real
+    β::Real
+    κ::Real
+    wm::Vector
+    wc::Vector
+end
+
+function UnscentedState(x::Vector,p::Matrix,α::Real,β::Real,κ::Real)
+    σ = sigma(x,p,α,κ)
+    (wm,wc) = sigmaweights(length(x),α,β,κ)
+    UnscentedState(x,p,σ,α,β,κ,wm,wc)
+end
 
 type AdditiveUnscentedObservationModel <: ObservationModel
     h::Function
@@ -13,15 +30,9 @@ type AdditiveUnscentedModel <: Model
 end
 
 type AdditiveUnscentedKalmanFilter <: UnscentedKalmanFilter
-    x::State
+    x::UnscentedState
     f::AdditiveUnscentedModel
     z::AdditiveUnscentedObservationModel
-    σ::Sigmas
-    α::Real
-    β::Real
-    κ::Real
-    wm::Vector
-    wc::Vector
 end
 
 function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)

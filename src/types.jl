@@ -6,7 +6,9 @@ abstract Model
 
 abstract ObservationModel
 
-type State{T}
+abstract AbstractState
+
+type State{T} <: AbstractState
     x::Vector{T}
     p::Matrix
 end
