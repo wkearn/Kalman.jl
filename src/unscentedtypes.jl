@@ -1,11 +1,11 @@
-typealias Sigmas Array{Array{Real,1},1}
+typealias Sigmas{T} Array{Array{T,1},1}
 
 abstract UnscentedKalmanFilter <: KalmanFilter
 
 type UnscentedState{T} <: AbstractState
     x::Vector{T}
     p::Matrix
-    σ::Sigmas
+    σ::Sigmas{T}
     α::Real
     β::Real
     κ::Real
@@ -40,6 +40,7 @@ type AdditiveUnscentedKalmanFilter <: UnscentedKalmanFilter
     f::AdditiveUnscentedModel
     z::AdditiveUnscentedObservationModel
 end
+
 
 function AdditiveUnscentedKalmanFilter(x::Vector,p::Matrix,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)
     s = UnscentedState(x,p,α,β,κ)
