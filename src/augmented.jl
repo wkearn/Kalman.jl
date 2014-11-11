@@ -4,6 +4,10 @@ using Kalman
 
 export AugmentedUnscentedState,
 AugmentedUnscentedModel,
+AugmentedUnscentedObservationModel,
+Observation,
+AugmentedUnscentedKalmanFilter,
+covs,
 ap,
 sigma,
 augment
@@ -35,6 +39,7 @@ type AugmentedUnscentedKalmanFilter
 end
 
 function ap(f::AugmentedUnscentedModel,s::AugmentedUnscentedState)
+    n = length(s.x)
     (x,p) = augment(s,f.q)
     (σn,wm,wc) = sigma(x,p,s.α,s.β,s.κ)
     σs = zeros(σn)
@@ -47,7 +52,7 @@ function ap(f::AugmentedUnscentedModel,s::AugmentedUnscentedState)
     for i in 1:size(σn,2)
         pn += wc[i] * (σs[:,i]-xn)*(σs[:,i]-xn)'
     end
-    return (xn,pn)
+    return AugmentedUnscentedState(xn[1:n],pn[1:n,1:n],s.α,s.β,s.κ)
 end
 
 function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
