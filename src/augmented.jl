@@ -36,18 +36,16 @@ end
 
 function ap(f::AugmentedUnscentedModel,s::AugmentedUnscentedState)
     (x,p) = augment(s,f.q)
-    (σn,wm,wc) = sigma(x,p,s.α,s.κ)
+    (σn,wm,wc) = sigma(x,p,s.α,s.β,s.κ)
     σs = zeros(σn)
     xn = zeros(x)
-    # Fails because wm is the weights for the non-augmented
-    # state
     for i in 1:size(σn,2)
         σs[:,i] = f.f(σn[:,i])
-        xn += s.wm[i] * σs[:,i]
+        xn += wm[i] * σs[:,i]
     end
     pn = zeros(p)
     for i in 1:size(σn,2)
-        pn += s.wc[i] * (σs[:,i]-xn)*(σs[:,i]-xn)'
+        pn += wc[i] * (σs[:,i]-xn)*(σs[:,i]-xn)'
     end
     return (xn,pn)
 end
