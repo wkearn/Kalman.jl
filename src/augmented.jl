@@ -58,9 +58,13 @@ end
 function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
     (x,p) = augment(kf.x,kf.z.r)
     (σn,wm,wc) = sigma(x,p,kf.x.α,kf.x.β,kf.x.κ)
-    yp = map(kf.z.h,σn)
-    
-    yhat = dot(wm,yp)
+    yp = zeros(σn)
+    yhat = zeros(x)
+
+    for i in 1:size(σn,2)
+        yp[:,i] = kf.z.h(σn[:,i])
+        yhat += wm[i] * yp[:,i]
+    end
     
     resx = map(x->x-kf.x.x,σn)
     resy = map(y->y-yhat,yp)
