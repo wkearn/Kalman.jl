@@ -48,6 +48,7 @@ function covs(kf::AdditiveUnscentedKalmanFilter,y::Observation)
         s += wc[i]*(resy[:,i]*resy[:,i]')
     end
 
+    s += kf.z.r
     return res,ph,s
 end
 
