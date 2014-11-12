@@ -1,6 +1,7 @@
 module Kalman
 
 export State,
+AbstractState,
 UnscentedState,
 Observation, 
 KalmanFilter, 
