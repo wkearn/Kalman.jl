@@ -56,10 +56,11 @@ function ap(f::AugmentedUnscentedModel,s::AugmentedUnscentedState)
 end
 
 function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
+    m = size(kf.z.r,1)
     (x,p) = augment(kf.x,kf.z.r)
     (σn,wm,wc) = sigma(x,p,kf.x.α,kf.x.β,kf.x.κ)
-    yp = zeros(σn)
-    yhat = zeros(x)
+    yp = zeros(m,size(σn,2))
+    yhat = zeros(m)
 
     for i in 1:size(σn,2)
         yp[:,i] = kf.z.h(σn[:,i])
