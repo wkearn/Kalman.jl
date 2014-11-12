@@ -37,7 +37,7 @@ function update!(kf::KalmanFilter,y::Observation)
     pn = kf.x.p - ph * (su'\ph')
     
     # This is an ugly hack which works for now
-    if typeof(kf.x) <: UnscentedState
+    if typeof(kf.x) <: AbstractUnscentedState
         kf.x = UnscentedState(xn,pn,kf.x.α,kf.x.β,kf.x.κ)
     else
         kf.x = State(xn,pn)

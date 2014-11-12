@@ -1,8 +1,10 @@
 typealias Sigmas{T} Array{Array{T,1},1}
 
 abstract UnscentedKalmanFilter <: KalmanFilter
+abstract AbstractUnscentedState <: AbstractState
 
-type UnscentedState{T} <: AbstractState
+
+type UnscentedState{T} <: AbstractUnscentedState
     x::Vector{T}
     p::Matrix
     σ::Sigmas{T}

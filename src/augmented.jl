@@ -14,7 +14,7 @@ ap,
 sigma,
 augment
 
-type AugmentedUnscentedState{T} <: AbstractState
+type AugmentedUnscentedState{T} <: AbstractUnscentedState
     x::Vector{T}
     p::Matrix
     α::Real
