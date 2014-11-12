@@ -12,7 +12,7 @@ type AugmentedUnscentedObservationModel <: Model
 end
 
 type AugmentedUnscentedKalmanFilter <: KalmanFilter
-    x::AugmentedUnscentedState
+    x::UnscentedState
     f::AugmentedUnscentedModel
     z::AugmentedUnscentedObservationModel
 end
