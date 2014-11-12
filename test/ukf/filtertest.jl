@@ -8,7 +8,6 @@ predict!(kf)
 @test kf1.x.x == kf.x.x 
 @test_approx_eq kf.x.x [1.0,-0.01]
 @test kf1.x.p == kf.x.p
-@test kf1.x.σ == kf.x.σ
 
 y = Observation([1.01])
 
@@ -17,4 +16,3 @@ update!(kf,y)
 
 @test kf2.x.x == kf.x.x
 @test kf2.x.p == kf.x.p
-@test kf2.x.σ == kf.x.σ

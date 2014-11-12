@@ -8,8 +8,16 @@ su,wm,wc = sigma(s)
 @test s.p == [4.0 0; 0 4.0]
 @test_approx_eq su[:,5] [1.0,-sqrt(0.08)]
 
-@test_approx_eq dot(s.wm,s.σ) s.x
-@test_approx_eq dot(s.wc,map(x->(x-s.x)*(x-s.x)',s.σ)) s.p
+xt = zeros(s.x)
+pt = zeros(s.p)
+
+for i in 1:size(su,2)
+    xt += wm[i] * su[:,i]
+    pt += wc[i] * (su[:,i]-s.x)*(su[:,i]-s.x)'
+end
+
+@test_approx_eq xt s.x
+@test_approx_eq pt s.p
 
 dt = 0.01
 
