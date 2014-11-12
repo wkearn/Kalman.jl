@@ -56,6 +56,7 @@ function ap(f::AugmentedUnscentedModel,s::AugmentedUnscentedState)
 end
 
 function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
+    n = size(kf.x.x,1)
     m = size(kf.z.r,1)
     (x,p) = augment(kf.x,kf.z.r)
     (σn,wm,wc) = sigma(x,p,kf.x.α,kf.x.β,kf.x.κ)
@@ -66,17 +67,23 @@ function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
         yp[:,i] = kf.z.h(σn[:,i])
         yhat += wm[i] * yp[:,i]
     end
-    
-    resx = zeros(σn)
+
+    resx = zeros(σn[1:n,:])
     resy = zeros(yp)
+    
     for i in 1:size(σn,2)
-        resx[:,i] = σn[:,i]-x
+        resx[:,i] = σn[1:n,i]-kf.x.x
         resy[:,i] = yp[:,i]-yhat
     end
 
     res = y.y-yhat
-    ph = dot(wc,map((x,z)->x*z',resx,resy))
-    s = dot(wc,map(x->x*x',resy))
+    ph = zeros(n,m)
+    s = zeros(m,m)
+    
+    for i in 1:size(σn,2)
+        ph += wc[i]*(resx[:,i]*resy[:,i]')
+        s += wc[i]*(resy[:,i]*resy[:,i]')
+    end
 
     return res,ph,s
 end
