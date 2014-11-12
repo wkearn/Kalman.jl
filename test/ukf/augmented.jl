@@ -1,4 +1,5 @@
 using Base.Test
+using Kalman
 include("../../src/augmented.jl")
 using Augmented
 
@@ -37,6 +38,7 @@ end
 zm = AugmentedUnscentedObservationModel(h,[0.1]')
 y = Observation([1.01])
 
-kf = AugmentedUnscentedKalmanFilter(sn,fm,zm)
+kf = AugmentedUnscentedKalmanFilter(s,fm,zm)
 
-(res,ph,s) = covs(kf,y)
+predict(kf)
+update(kf,y)

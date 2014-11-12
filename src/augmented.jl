@@ -2,6 +2,8 @@ module Augmented
 
 using Kalman
 
+import Kalman: ap,covs
+
 export AugmentedUnscentedState,
 AugmentedUnscentedModel,
 AugmentedUnscentedObservationModel,
@@ -32,7 +34,7 @@ type AugmentedUnscentedObservationModel <: Model
     r::Matrix
 end
 
-type AugmentedUnscentedKalmanFilter
+type AugmentedUnscentedKalmanFilter <: KalmanFilter
     x::AugmentedUnscentedState
     f::AugmentedUnscentedModel
     z::AugmentedUnscentedObservationModel
