@@ -6,7 +6,7 @@ x1,p1 = augment(s,1e-10*eye(2))
              zeros(2,2) 1e-10*eye(2)]
 
 function fa(x::Vector)
-    x1 = zeros(x)
+    x1 = zeros(2)
     x1[1] = x[1] + 0.01*x[2] + x[3]
     x1[2] = x[2] - 0.01*x[1] + x[4]
     x1

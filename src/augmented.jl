@@ -21,17 +21,17 @@ function ap(f::AugmentedUnscentedModel,s::UnscentedState)
     n = length(s.x)
     (x,p) = augment(s,f.q)
     (σn,wm,wc) = sigma(x,p,s.α,s.β,s.κ)
-    σs = zeros(σn)
-    xn = zeros(x)
+    σs = zeros(n,size(σn,2))
+    xn = zeros(s.x)
     for i in 1:size(σn,2)
         σs[:,i] = f.f(σn[:,i])
         xn += wm[i] * σs[:,i]
     end
-    pn = zeros(p)
+    pn = zeros(s.p)
     for i in 1:size(σn,2)
         pn += wc[i] * (σs[:,i]-xn)*(σs[:,i]-xn)'
     end
-    return UnscentedState(xn[1:n],pn[1:n,1:n],s.α,s.β,s.κ)
+    return UnscentedState(xn,pn,s.α,s.β,s.κ)
 end
 
 function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
