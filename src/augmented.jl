@@ -67,8 +67,12 @@ function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
         yhat += wm[i] * yp[:,i]
     end
     
-    resx = map(x->x-kf.x.x,σn)
-    resy = map(y->y-yhat,yp)
+    resx = zeros(σn)
+    resy = zeros(yp)
+    for i in 1:size(σn,2)
+        resx[:,i] = σn[:,i]-x
+        resy[:,i] = yp[:,i]-yhat
+    end
 
     res = y.y-yhat
     ph = dot(wc,map((x,z)->x*z',resx,resy))
