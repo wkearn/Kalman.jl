@@ -20,15 +20,33 @@ function ap(f::AdditiveUnscentedModel,s::UnscentedState)
 end
 
 function covs(kf::AdditiveUnscentedKalmanFilter,y::Observation)
-    yp = map(kf.z.h,kf.x.σ)
-    yhat = dot(kf.x.wm,yp)
+    n = size(kf.x.x,1)
+    m = size(kf.z.r,1)
+    σn,wm,wc = sigma(kf.x.x,kf.x.p,kf.x.α,kf.x.β,kf.x.κ)
+    k = size(σn,2)
+    yp = zeros(m,k)
+    yhat = zeros(m)
+    for i in 1:k
+        yp[:,i] = kf.z.h(σn[:,i])
+        yhat += wm[i] * yp[:,i]
+    end
 
-    resx = map(x->x-kf.x.x,kf.x.σ)
-    resy = map(y->y-yhat,yp)
+    resx = zeros(σn)
+    resy = zeros(yp)
+
+    for i in 1:k
+        resx[:,i] = σn[:,i]-kf.x.x
+        resy[:,i] = yp[:,i]-yhat
+    end
 
     res = y.y-yhat
-    ph = dot(kf.x.wc,map((x,z)->x*z',resx,resy))
-    s = dot(kf.x.wc,map(x->x*x',resy)) + kf.z.r
+    
+    ph = zeros(n,m)
+    s = zeros(m,m)
+    for i in 1:k
+        ph += wc[i]*(resx[:,i]*resy[:,i]')
+        s += wc[i]*(resy[:,i]*resy[:,i]')
+    end
 
     return res,ph,s
 end
