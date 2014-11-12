@@ -24,7 +24,8 @@ ExtendedKalmanFilter,
 AdditiveUnscentedKalmanFilter,
 UnscentedKalmanFilter,
 AdditiveUnscentedModel,
-AdditiveUnscentedObservationModel
+AdditiveUnscentedObservationModel,
+sigma
 
 include("types.jl")
 include("filter.jl")

@@ -7,30 +7,9 @@ abstract AbstractUnscentedState <: AbstractState
 type UnscentedState{T} <: AbstractUnscentedState
     x::Vector{T}
     p::Matrix
-    σ::Sigmas{T}
     α::Real
     β::Real
     κ::Real
-    wm::Vector
-    wc::Vector
-end
-
-function UnscentedState{T}(x::Vector{T},p::Matrix,α::Real,β::Real,κ::Real)
-    σ = sigma(x,p,α,κ)
-    (wm,wc) = sigmaweights(length(x),α,β,κ)
-    UnscentedState(x,p,σ,α,β,κ,wm,wc)
-end
-
-function UnscentedState{T}(x::State{T},α::Real,β::Real,κ::Real)
-    σ = sigma(x,α,κ)
-    (wm,wc) = sigmaweights(length(x.x),α,β,κ)
-    UnscentedState(x.x,x.p,σ,α,β,κ,wm,wc)
-end
-
-function UnscentedState{T}(σ::Sigmas{T},α::Real,β::Real,κ::Real,wm::Vector,wc::Vector)
-    x = dot(wm,σ)
-    p = dot(wc,map(y->(y-x)*(y-x)',σ))
-    UnscentedState(x,p,σ,α,β,κ,wm,wc)
 end
 
 type AdditiveUnscentedObservationModel <: ObservationModel
@@ -58,6 +37,25 @@ end
 function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)
     s = UnscentedState(x,α,β,κ)
     AdditiveUnscentedKalmanFilter(s,f,z)
+end
+
+function sigma(s::UnscentedState)
+    n = length(s.x)
+    σ = zeros(n,2n+1)
+    wm = zeros(2n+1)
+    wc = zeros(2n+1)
+    λ = s.α^2*(n+s.κ)-n
+    σ[:,1] = s.x
+    wm[1] = λ/(n+λ)
+    wc[1] = wm[1] + (1-s.α^2+s.β)
+    wm[2:end] = 1/(2*(n+λ))
+    wc[2:end] = wm[2:end]
+    sp = sqrt(n+λ)*full(chol(s.p))
+    for i = 2:n+1
+        σ[:,i] = s.x + sp[:,i-1]
+        σ[:,i+n] = s.x - sp[:,i-1]
+    end
+    (σ,wm,wc)
 end
 
 function sigma(x::Vector,p::Matrix,α,κ)
