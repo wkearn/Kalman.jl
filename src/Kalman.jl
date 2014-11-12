@@ -25,12 +25,17 @@ AdditiveUnscentedKalmanFilter,
 UnscentedKalmanFilter,
 AdditiveUnscentedModel,
 AdditiveUnscentedObservationModel,
-sigma
+sigma,
+AugmentedUnscentedModel,
+AugmentedUnscentedObservationModel,
+AugmentedUnscentedKalmanFilter,
+augment
 
 include("types.jl")
 include("filter.jl")
 include("ekf.jl")
 include("unscented.jl")
+include("augmented.jl")
 
 # Nullable Observations work but only for Julia v0.4
 if VERSION >= v"0.4.0-"

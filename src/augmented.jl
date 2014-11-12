@@ -1,19 +1,3 @@
-module Augmented
-
-using Kalman
-
-import Kalman: ap,covs
-
-export AugmentedUnscentedModel,
-AugmentedUnscentedObservationModel,
-Observation,
-AugmentedUnscentedKalmanFilter,
-covs,
-ap,
-sigma,
-augment
-
-
 #### 
 # We only need different models from the UKF for dispatch
 
@@ -90,5 +74,4 @@ function augment(s::UnscentedState,R::Matrix)
     p = [s.p zeros(n,m);
          zeros(m,n) R]
     return x,p
-end    
 end
