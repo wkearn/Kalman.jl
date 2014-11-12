@@ -31,7 +31,7 @@ function ap(f::AugmentedUnscentedModel,s::UnscentedState)
     for i in 1:size(σn,2)
         pn += wc[i] * (σs[:,i]-xn)*(σs[:,i]-xn)'
     end
-    return AugmentedUnscentedState(xn[1:n],pn[1:n,1:n],s.α,s.β,s.κ)
+    return UnscentedState(xn[1:n],pn[1:n,1:n],s.α,s.β,s.κ)
 end
 
 function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
