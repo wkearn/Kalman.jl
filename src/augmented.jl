@@ -14,6 +14,9 @@ sigma,
 augment
 
 
+#### 
+# We only need different models from the UKF for dispatch
+
 type AugmentedUnscentedModel <: Model
     f::Function
     q::Matrix
@@ -87,7 +90,5 @@ function augment(s::UnscentedState,R::Matrix)
     p = [s.p zeros(n,m);
          zeros(m,n) R]
     return x,p
-end
-
-    
+end    
 end
