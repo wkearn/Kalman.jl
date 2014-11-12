@@ -4,10 +4,19 @@ include("unscentedtypes.jl")
 
 # Now a target for abstraction
 function ap(f::AdditiveUnscentedModel,s::UnscentedState)
-    σs = map(f.f,s.σ)
-    x = dot(s.wm,σs)
-    p = dot(s.wc,map(y->(y-x)*(y-x)',σs)) + f.q
-    UnscentedState(σs,s.α,s.β,s.κ,s.wm,s.wc)
+    σn,wm,wc = sigma(s)
+    σs = zeros(σn)
+    xn = zeros(s.x)
+    for i in 1:size(σn,2)
+        σs[:,i] = f.f(σn[:,i])
+        xn += wm[i] * σs[:,i]
+    end
+    pn = zeros(s.p)
+    for i in 1:size(σn,2)
+        pn += wc[i] * (σs[:,i]-xn)*(σs[:,i]-xn)'
+    end
+    pn += f.q
+    UnscentedState(xn,pn,s.α,s.β,s.κ)
 end
 
 function covs(kf::AdditiveUnscentedKalmanFilter,y::Observation)
