@@ -4,8 +4,7 @@ using Kalman
 
 import Kalman: ap,covs
 
-export AugmentedUnscentedState,
-AugmentedUnscentedModel,
+export AugmentedUnscentedModel,
 AugmentedUnscentedObservationModel,
 Observation,
 AugmentedUnscentedKalmanFilter,
@@ -14,15 +13,6 @@ ap,
 sigma,
 augment
 
-type AugmentedUnscentedState{T} <: AbstractUnscentedState
-    x::Vector{T}
-    p::Matrix
-    α::Real
-    β::Real
-    κ::Real
-end
-
-#AugmentedUnscentedState(x::Vector,p::Matrix,α::Real,β::Real,κ::Real) = AugmentedUnscentedState(x,p,α,β,κ)
 
 type AugmentedUnscentedModel <: Model
     f::Function
@@ -40,7 +30,7 @@ type AugmentedUnscentedKalmanFilter <: KalmanFilter
     z::AugmentedUnscentedObservationModel
 end
 
-function ap(f::AugmentedUnscentedModel,s::AugmentedUnscentedState)
+function ap(f::AugmentedUnscentedModel,s::UnscentedState)
     n = length(s.x)
     (x,p) = augment(s,f.q)
     (σn,wm,wc) = sigma(x,p,s.α,s.β,s.κ)
