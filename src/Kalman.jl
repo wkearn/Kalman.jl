@@ -31,7 +31,7 @@ AugmentedUnscentedObservationModel,
 AugmentedUnscentedKalmanFilter,
 augment
 
-include("types.jl")
+include("bkf.jl")
 include("filter.jl")
 include("ekf.jl")
 include("unscented.jl")
