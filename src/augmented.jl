@@ -1,5 +1,5 @@
 #### 
-# We only need different models from the UKF for dispatch
+# We need different models from the UKF for dispatch
 
 type AugmentedUnscentedModel <: Model
     f::Function
@@ -67,6 +67,9 @@ function covs(kf::AugmentedUnscentedKalmanFilter,y::Observation)
     return res,ph,s
 end
 
+# Helper function takes a state and a covariance matrix,
+# augments them appropriately, and returns the augmented 
+# state and covariance
 function augment(s::UnscentedState,R::Matrix)
     n = length(s.x)
     m = size(R,1)
