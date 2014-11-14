@@ -21,6 +21,16 @@ type LinearModel <: Model
     q::Matrix
 end
 
+## This is the first function a Kalman filter needs to 
+# implement: Apply its model to its state to generate a
+# new state
+
+function ap(f::LinearModel,x::State)
+    x1 = f.a*x.x
+    p1 = f.a*x.p*f.a' + f.g*f.q*f.g'
+    State(x1,p1)
+end
+
 type Observation{T}
     y::Vector{T}
 end
@@ -39,3 +49,16 @@ type BasicKalmanFilter <: LinearKalmanFilter
 end
 
 Base.copy(kf::KalmanFilter) = deepcopy(kf)
+
+
+## This is the second of two functions a Kalman filter needs to implement
+# Return three matrices: 
+# 1. The residual (y-Hx) (`res`)
+# 2. The cross-covariance between state and measurement (`ph`)
+# 3. The innovation covariance matrix
+function covs(kf::BasicKalmanFilter,y::Observation)
+    res = y.y - kf.z.h * kf.x.x
+    ph = kf.x.p * kf.z.h'
+    s = kf.z.h * kf.x.p * kf.z.h' + kf.z.r
+    (res,ph,s)
+end
