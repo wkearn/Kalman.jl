@@ -34,11 +34,6 @@ function AdditiveUnscentedKalmanFilter(x::Vector,p::Matrix,f::AdditiveUnscentedM
     AdditiveUnscentedKalmanFilter(s,f,z)
 end
 
-function AdditiveUnscentedKalmanFilter(x::State,f::AdditiveUnscentedModel,z::AdditiveUnscentedObservationModel,α::Real,β::Real,κ::Real)
-    s = UnscentedState(x,α,β,κ)
-    AdditiveUnscentedKalmanFilter(s,f,z)
-end
-
 function sigma(x::Vector,p::Matrix,α,β,κ)
     n = length(x)
     σ = zeros(n,2n+1)
