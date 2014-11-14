@@ -13,6 +13,14 @@ type NonlinearModel <: Model
     end
 end
 
+function ap(f::NonlinearModel,x::State)
+    x1 = f.f(x.x)
+    F = f.j(x.x)
+    G = f.g(x.x)
+    p1 = F*x.p*F' + G*f.q*G'
+    State(x1,p1)
+end
+
 type NonlinearObservationModel <: ObservationModel
     h::Function
     j::Function
@@ -27,14 +35,6 @@ type BasicExtendedKalmanFilter <: ExtendedKalmanFilter
     x::State
     f::NonlinearModel
     z::NonlinearObservationModel
-end
-
-function ap(f::NonlinearModel,x::State)
-    x1 = f.f(x.x)
-    F = f.j(x.x)
-    G = f.g(x.x)
-    p1 = F*x.p*F' + G*f.q*G'
-    State(x1,p1)
 end
 
 function covs(kf::BasicExtendedKalmanFilter,y::Observation)
