@@ -16,9 +16,8 @@ end
 
 function update!(kf::KalmanFilter,y::Observation)
     (res,ph,s) = covs(kf,y)
-    su = lufact!(s)
-    xn = kf.x.x + ph * (su\res)
-    pn = kf.x.p - ph * (su'\ph')
+    xn = kf.x.x + ph * (s\res)
+    pn = kf.x.p - ph * (s'\ph')
     
     # This is an ugly hack which works for now
     if typeof(kf.x) <: AbstractUnscentedState
