@@ -59,6 +59,6 @@ Base.copy(kf::KalmanFilter) = deepcopy(kf)
 function covs(kf::BasicKalmanFilter,y::Observation)
     res = y.y - kf.z.h * kf.x.x
     ph = kf.x.p * kf.z.h'
-    s = kf.z.h * kf.x.p * kf.z.h' + kf.z.r
+    s = kf.z.h * ph + kf.z.r
     (res,ph,s)
 end
